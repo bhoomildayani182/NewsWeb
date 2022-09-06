@@ -14,7 +14,8 @@ export class Newslist extends Component {
           <Card.Text>
            {description}
           </Card.Text>
-          <Button variant="primary">Read More</Button>
+          <a href={newsUrl} target="_blank">
+          <Button variant="primary">Read More</Button></a>
         </Card.Body>
       </Card>
       </div>
