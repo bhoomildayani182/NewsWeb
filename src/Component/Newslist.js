@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import Badge from 'react-bootstrap/Badge';
 
 export class Newslist extends Component {
   render() {
