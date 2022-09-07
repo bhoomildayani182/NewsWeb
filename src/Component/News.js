@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Newslist from './Newslist'
+import Spinner from './Spinner';
 
 export class News extends Component {
     articles = [
@@ -21,7 +22,7 @@ export class News extends Component {
     constructor(){
         super();
         console.log("I am Constructor");
-        this.state={
+        this.state={    //state use : Utomatical data Update
             articles : this.articles,
             loading : false,
             page:1
@@ -29,7 +30,7 @@ export class News extends Component {
     }
     async componentDidMount(){
         console.log("cdm");
-        let url="https://newsapi.org/v2/top-headlines?country=in&apiKey=efe1b145a0ff46ed9b5498fc55c956f4&page=1&pageSize=20";
+        let url=`https://newsapi.org/v2/top-headlines?country=in&apiKey=efe1b145a0ff46ed9b5498fc55c956f4&page=1&pageSize=${this.props.pageSize}`;
         let data = await fetch(url);
         let parsedata = await data.json()
         console.log(parsedata)
@@ -38,44 +39,46 @@ export class News extends Component {
 
     PreviousNews= async ()=>{
         console.log("PreviousPage");
-        let url=`https://newsapi.org/v2/top-headlines?country=in&apiKey=efe1b145a0ff46ed9b5498fc55c956f4&page=${this.state.page-1}&pageSize=20`;
+        let url=`https://newsapi.org/v2/top-headlines?country=in&apiKey=efe1b145a0ff46ed9b5498fc55c956f4&page=${this.state.page-1}&pageSize=${this.props.pageSize}`;
+        {this.setState({loading : true})}
             let data = await fetch(url);
             let parsedata = await data.json()
-            console.log(parsedata)
+            //console.log(parsedata)
             this.setState({articles: parsedata.articles})
 
         this.setState({
             
             page:this.state.page-1,
-            articles: parsedata.articles
+            articles: parsedata.articles,
+            loading:false
         })
     }
 
     NextNews= async ()=>{
-        if (this.state.page + 1 > Math.ceil(this.state.totalResults/20)){
-
-        }
-        else{
+        if (!(this.state.page + 1 > Math.ceil(this.state.totalResults/this.props.pageSize))){
             console.log("NextPage");
-            let url=`https://newsapi.org/v2/top-headlines?country=in&apiKey=efe1b145a0ff46ed9b5498fc55c956f4&page=${this.state.page+1}&pageSize=20`;
+            let url=`https://newsapi.org/v2/top-headlines?country=in&apiKey=efe1b145a0ff46ed9b5498fc55c956f4&page=${this.state.page+1}&pageSize=${this.props.pageSize}`;
+            {this.setState({loading:true})}
                 let data = await fetch(url);
                 let parsedata = await data.json()
-                console.log(parsedata)
+                // console.log(parsedata)
                 this.setState({articles: parsedata.articles})
 
             this.setState({
                 
                 page:this.state.page+1,
-                articles: parsedata.articles
+                articles: parsedata.articles,
+                loading : false
             })}
     }
 
   render() {
     return (
       <div className='container my-3'>
-        <h1>NewsWeb - Top Hedlines</h1>
+        <h1 className='text-center'>NewsWeb - Top Hedlines</h1>
+        {this.state.loading && <Spinner />}
         <div className="row">
-            {this.state.articles.map((element)=>{
+            {(!this.state.loading) && this.state.articles.map((element)=>{
                 return <div className='col-md-4' key={element.url}>
                 <Newslist title={element.title} description={element.descriptiony
                 } imageUrl={element.urlToImage} newsUrl={element.url}/>
@@ -85,7 +88,7 @@ export class News extends Component {
         </div>
         <div className='container d-flex justify-content-between'>
             <button disabled={this.state.page<=1} type="button" className='btn btn-dark' onClick={this.PreviousNews}> &larr; Previous</button>
-            <button type="button" className='btn btn-dark' onClick={this.NextNews}>Next &rarr;</button>
+            <button disabled={(this.state.page + 1 > Math.ceil(this.state.totalResults/this.props.pageSize))} type="button" className='btn btn-dark' onClick={this.NextNews}>Next &rarr;</button>
         </div>
       </div>
     )
