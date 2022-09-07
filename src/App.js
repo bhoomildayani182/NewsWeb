@@ -7,7 +7,7 @@ function App() {
   return (
     <div>
       <NavigationBar />
-      <News pageSize={6} />
+      <News pageSize={6} country="in" category="business" />
     </div>
   );
 }
