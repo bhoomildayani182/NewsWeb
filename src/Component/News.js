@@ -40,7 +40,7 @@ export class News extends Component {
     }
     constructor(props){
         super(props);
-        console.log("I am Constructor");
+        // console.log("I am Constructor");
         this.state={    //state use : Utomatical data Update
             articles : this.articles,
             loading : false,
@@ -50,13 +50,18 @@ export class News extends Component {
         document.title=`${this.capitalizerFirstLetter(this.props.category)} - NewsWeb`;
     }
     async UpdateNews(){
+        this.props.setProgress(10);
         console.log("cdm");
         let url=`https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apikey=efe1b145a0ff46ed9b5498fc55c956f4&page=${this.state.page}&pageSize=${this.props.pageSize}`;
         this.setState({loading:true});
         let data = await fetch(url);
+        this.props.setProgress(30);
         let parsedata = await data.json()
+        this.props.setProgress(50);
         console.log(parsedata)
-        this.setState({articles: parsedata.articles, totalResults: parsedata.totalResults, loading:false})
+        this.setState({articles: parsedata.articles, totalResults: parsedata.totalResults, loading:false,})
+        this.props.setProgress(100);
+
     }
     async componentDidMount(){
         this.UpdateNews();
@@ -114,7 +119,6 @@ export class News extends Component {
         let url=`https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apikey=efe1b145a0ff46ed9b5498fc55c956f4&page=${this.state.page}&pageSize=${this.props.pageSize}`;
         let data = await fetch(url);
         let parsedata = await data.json()
-        console.log(parsedata)
         this.setState({articles: this.state.articles.concat(parsedata.articles), totalResults: parsedata.totalResults})
       };
 
@@ -122,16 +126,16 @@ export class News extends Component {
     return (
       <>
         <h1 className='text-center' style={{margin:'34px 0px'}}>NewsWeb - Top on {this.capitalizerFirstLetter(this.props.category)}Hedlines </h1>
-        {/* {this.state.loading && <Spinner />} */}
+        {this.state.loading && <Spinner />}
         <InfiniteScroll
           dataLength={this.state.articles.length}
           next={this.fetchMoreData}
-          hasMore={this.state.articles.length !== this.totalResults}
+          hasMore={this.state.articles.length !== this.state.totalResults}
           loader={<Spinner/>}
           >
         <div className='container' >
         <div className="row">
-            {(!this.state.loading) && this.state.articles.map((element)=>{
+            {this.state.articles.map((element)=>{
                 return <div className='col-md-4' key={element.url}>
                 <Newslist title={element.title} description={element.descriptiony
                 } imageUrl={element.urlToImage} newsUrl={element.url} author={element.author} date={element.publishedAt} source={element.source.name} />

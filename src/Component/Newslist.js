@@ -6,8 +6,19 @@ export class Newslist extends Component {
   render() {
     let {title, description, imageUrl, newsUrl, author, date, source} = this.props
     return (
-        <div className='my-3'>
-        <Card style={{ width: '18rem' }}>
+      <div className="my-3">
+      <div className="card">
+          <div style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              position: 'absolute',
+              right: '0'
+          }
+          }>
+
+              <span className="badge rounded-pill bg-danger"> {source} </span>
+          </div>
+        
         <Card.Img variant="top" src={imageUrl} />
         <Card.Body>
           <Card.Title>{title}</Card.Title>
@@ -20,8 +31,11 @@ export class Newslist extends Component {
           <a href={newsUrl} target="_blank">
           <Button variant="dark">Read More</Button></a>
         </Card.Body>
-      </Card>
+      
       </div>
+      </div>
+      
+      
     )
   }
 }
