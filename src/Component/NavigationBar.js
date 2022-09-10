@@ -10,7 +10,7 @@ function NavigationBar() {
           <Navbar.Brand href="">NewsWeb</Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link href="/home">Home</Nav.Link>
-            <Nav.Link href="/About">About</Nav.Link>
+            {/* <Nav.Link href="/About">About</Nav.Link> */}
             <Nav.Link href="/business">Business</Nav.Link>
             <Nav.Link href="/entertainment">Entertainment</Nav.Link>
             <Nav.Link href="/general">General</Nav.Link>
