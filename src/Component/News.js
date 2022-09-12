@@ -1,4 +1,4 @@
-import React,{useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import Newslist from './Newslist'
 import Spinner from './Spinner';
 import PropTypes from 'prop-types'
@@ -9,7 +9,6 @@ const News =(props)=> {
     const [loading, setLoading] = useState(true)    
     const [page, setPage] = useState(1)    
     const [totalResults, setTotalResults] = useState(0)    
-//        document.title=`${capitalizerFirstLetter(props.category)} - NewsWeb`;
 
        
     const capitalizerFirstLetter=(string)=>{
@@ -18,8 +17,7 @@ const News =(props)=> {
     
     const UpdateNews = async ()=>{
         props.setProgress(10);
-        console.log("cdm");
-        let url=`https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apikey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
+        const url=`https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apikey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
         setLoading(true)
         let data = await fetch(url);
         props.setProgress(30);
@@ -31,34 +29,25 @@ const News =(props)=> {
         props.setProgress(100);
     }
     useEffect(()=>{
+        document.title=`${capitalizerFirstLetter(props.category)} - NewsWeb`;
         UpdateNews();
+        
     },[])
     
-    const PreviousNews= async ()=>{
-        setPage(page - 1);
-        UpdateNews();
-    }
-
-    const NextNews= async ()=>{
-        setPage(page + 1);
-        UpdateNews();
-
-    }
-
-    const fetchMoreData = async() => {
-        setPage(page + 1)
-        console.log("cdm");
-        let url=`https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apikey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
+    
+    const fetchMoreData = async () => {
+        const url=`https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apikey=${props.apiKey}&page=${page+1}&pageSize=${props.pageSize}`;
+        setPage(page+1)
         let data = await fetch(url);
         let parsedata = await data.json()
-        setArticles(parsedata.articles)
+        setArticles(articles.concat(parsedata.articles))
         setTotalResults(parsedata.totalResults)
       };
 
     return (
       <>
-        <h1 className='text-center' style={{margin:'34px 0px'}}>NewsWeb - Top on {capitalizerFirstLetter(props.category)}Hedlines </h1>
-        {this.state.loading && <Spinner />}
+        <h1 className='text-center' style={{margin:'34px 0px', marginTop:'90px '}}>NewsWeb - Top on {capitalizerFirstLetter(props.category)}Hedlines </h1>
+        {loading && <Spinner />}
         <InfiniteScroll
           dataLength={articles.length}
           next={fetchMoreData}
@@ -76,10 +65,7 @@ const News =(props)=> {
         </div>
         </div>
         </InfiniteScroll>
-        {/* <div className='container d-flex justify-content-between'>
-            <button disabled={this.state.page<=1} type="button" className='btn btn-dark' onClick={this.PreviousNews}> &larr; Previous</button>
-            <button disabled={(this.state.page + 1 > Math.ceil(this.state.totalResults/props.pageSize))} type="button" className='btn btn-dark' onClick={this.NextNews}>Next &rarr;</button>
-        </div> */}
+
       </>
     )
 }
